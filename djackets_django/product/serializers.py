@@ -38,6 +38,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         return review    
 
 class ProductSerializer(serializers.ModelSerializer):
+    reviews = ReviewSerializer(many=True, read_only=True)
     class Meta:
         model = Product
         fields = (
@@ -50,7 +51,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "map_url",
             "avg_rating",
             "get_image",
-            "get_thumbnail"
+            "get_thumbnail",
+            "reviews"
         )
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -64,7 +66,7 @@ class CategorySerializer(serializers.ModelSerializer):
             "get_absolute_url",
             "products",
             "get_image",
-            "get_thumbnail"
+            "get_thumbnail",
         )
 
 class CustomUserCreateSerializer(UserCreateSerializer):

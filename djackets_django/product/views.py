@@ -1,12 +1,26 @@
 from django.db.models import Q
 from django.http import Http404
 
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Product, Category
-from .serializers import ProductSerializer, CategorySerializer
+from .models import Product, Category, Review
+from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer
+
+class ReviewList(APIView):
+    def get_object(self, product_slug):
+        try:
+            return Review.objects.filter(shop_id__slug=product_slug)
+        except Review.DoesNotExist:
+            raise Http404
+    
+    def get(self, request, product_slug, format=None):
+        reviews = self.get_object(product_slug)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)
+
 
 class LatestProductsList(APIView):
     def get(self, request, format=None):
