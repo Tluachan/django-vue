@@ -3,6 +3,9 @@ from PIL import Image
 
 from django.core.files import File
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class Category(models.Model):     
     id = models.AutoField(primary_key=True)
@@ -65,6 +68,7 @@ class Product(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     map_url = models.URLField(blank=True)
     avg_rating = models.FloatField(blank=True)
+    onwer = models.ForeignKey(User, blank=True,null=True,on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('-date_added',)
@@ -103,3 +107,15 @@ class Product(models.Model):
         thumbnail = File(thumb_io, name=image.name)
 
         return thumbnail
+    
+
+class Review(models.Model):
+    id = models.AutoField(primary_key=True)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    shop_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    content = models.TextField()
+    rating = models.FloatField()
+    datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.content
