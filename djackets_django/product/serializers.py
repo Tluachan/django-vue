@@ -9,6 +9,7 @@ User = get_user_model()
 
 class ReviewSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    username = serializers.ReadOnlyField(source='user_id.username')
     shop_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
@@ -19,7 +20,8 @@ class ReviewSerializer(serializers.ModelSerializer):
             'shop_id',
             'content',
             'rating',
-            'datetime'
+            'datetime',
+            'username'
         )
 
     def create(self, validated_data):

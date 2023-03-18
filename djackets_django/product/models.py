@@ -48,6 +48,7 @@ class Category(models.Model):
         img.save(thumb_io, 'JPEG', quality=85)
         thumbnail = File(thumb_io, name=image.name)
         return thumbnail
+    
 
     #To personalize what to be shown with plural form from this class
     class Meta:
@@ -68,7 +69,7 @@ class Product(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     map_url = models.URLField(blank=True)
     avg_rating = models.FloatField(blank=True)
-    onwer = models.ForeignKey(User, blank=True,null=True,on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, blank=True,null=True,on_delete=models.CASCADE)
 
     class Meta:
         ordering = ('-date_added',)

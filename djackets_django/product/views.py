@@ -20,6 +20,7 @@ class ReviewList(APIView):
         reviews = self.get_object(product_slug)
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
+    
 
 
 class LatestProductsList(APIView):
