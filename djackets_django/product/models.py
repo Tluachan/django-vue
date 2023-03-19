@@ -112,8 +112,8 @@ class Product(models.Model):
 
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    shop_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User,blank=True,null=True,on_delete=models.CASCADE,)
+    product = models.ForeignKey(Product,blank=True,null=True, on_delete=models.CASCADE)
     content = models.TextField()
     rating = models.FloatField()
     datetime = models.DateTimeField(auto_now_add=True)

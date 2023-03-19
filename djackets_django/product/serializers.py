@@ -8,31 +8,31 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    username = serializers.ReadOnlyField(source='user_id.username')
-    shop_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    #user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    #username = serializers.ReadOnlyField(source='user_id.username')
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
 
     class Meta:
         model = Review
         fields = (
             'id',
-            'user_id',
-            'shop_id',
+            #'user_id',
+            'product',
             'content',
             'rating',
             'datetime',
-            'username'
+            #'username'
         )
 
     def create(self, validated_data):
-        # Get the user and product objects from the validated data
-        user = self.context["request"].user
-        product = self.context["product"]
+        #product_id = validated_data["product_id"]
+        # get the product object using the slug
+        #product = Product.objects.filter(id=product_id).first()
 
         # Create the review object with the validated data and user/product objects
         review = Review.objects.create(
-            user_id=user.id,
-            shop_id=product.id,
+            #user_id=user.id,
+            #product=product,
             content=validated_data["content"],
             rating=validated_data["rating"],
         )
@@ -72,6 +72,8 @@ class CategorySerializer(serializers.ModelSerializer):
         )
 
 class CustomUserCreateSerializer(UserCreateSerializer):
+    user_id = serializers.ReadOnlyField(source='id')
+
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'is_staff')
+        fields = ('id', 'email', 'username', 'password', 'first_name', 'last_name', 'is_staff', 'user_id')

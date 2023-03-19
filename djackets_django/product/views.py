@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 
 from .models import Product, Category, Review
 from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer
@@ -12,7 +13,7 @@ from .serializers import ProductSerializer, CategorySerializer, ReviewSerializer
 class ReviewList(APIView):
     def get_object(self, product_slug):
         try:
-            return Review.objects.filter(shop_id__slug=product_slug)
+            return Review.objects.filter(product__slug=product_slug)
         except Review.DoesNotExist:
             raise Http404
     
@@ -20,8 +21,17 @@ class ReviewList(APIView):
         reviews = self.get_object(product_slug)
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data)
-    
 
+class CreateReview(APIView):
+    def post(self, request, product_slug, format=None):
+        serializer = ReviewSerializer(data=request.data)
+        if serializer.is_valid():
+            #product = Product.objects.filter(product__slug=product_slug).first()
+            #if not product:
+                #raise Http404
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LatestProductsList(APIView):
     def get(self, request, format=None):
